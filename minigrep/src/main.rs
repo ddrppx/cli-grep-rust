@@ -17,8 +17,10 @@ fn main() {
     println!("Searching for: {}", query);
     println!("In file: {}", filename);
 
-    let contents: String  = fs::read_to_string(filename).expect("Something went wrong reading the file");
+    // Aquiring contents of the read file
+    let contents: String = fs::read_to_string(filename).expect("Something went wrong reading the file");
 
+    // Output
     println!("With text: \n{}", contents);
 
 }
