@@ -1,4 +1,6 @@
+// Modules
 use std::env;
+use std::fs;
 
 fn main() {
     // Collecting args from cli
@@ -14,4 +16,9 @@ fn main() {
     // printing out the arguments
     println!("Searching for: {}", query);
     println!("In file: {}", filename);
+
+    let contents: String  = fs::read_to_string(filename).expect("Something went wrong reading the file");
+
+    println!("With text: \n{}", contents);
+
 }
