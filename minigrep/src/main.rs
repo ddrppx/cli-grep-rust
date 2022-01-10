@@ -8,14 +8,14 @@ fn main() {
     
     // Calling the argument parsing function
     // Destructing the returned tuple into two variables
-    let(query, filename) = parse_config(&args);
+    let config: Config = parse_config(&args);
 
     // printing out the arguments
-    println!("Searching for: {}", query);
-    println!("In file: {}", filename);
+    println!("Searching for: {}", config.query);
+    println!("In file: {}", config.filename);
 
     // Aquiring contents of the read file
-    let contents: String = fs::read_to_string(filename).expect("Something went wrong reading the file");
+    let contents: String = fs::read_to_string(config.filename).expect("Something went wrong reading the file");
 
     // Output
     println!("With text: \n{}", contents);
@@ -33,14 +33,14 @@ struct Config {
 
 // &[Strings] = Reference to an array of strings
 // -> = Returns a tuple with two strings
-fn parse_config(args: &[Strings]) -> (&str, &str){
+fn parse_config(args: &[String]) -> Config {
     
     // Argument with the text to search
     // Index 1. Because args[0] = bin path
-    let query: String = args[1];
+    let query: String = args[1].clone();
 
     // Argument with the filename
-    let filename: String = args[2];
+    let filename: String = args[2].clone();
 
-    Config { query, filename };
+    Config { query, filename }
 }
