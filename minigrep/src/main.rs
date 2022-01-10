@@ -2,6 +2,7 @@
 use std::env;
 use std::fs;
 use std::process;
+use std::error::Error;
 
 fn main() {
     // Collecting args from cli
@@ -23,12 +24,22 @@ fn main() {
     println!("Searching for: {}", config.query);
     println!("In file: {}", config.filename);
 
+    // Checking if run() returns an error variant
+    if let Err(e) = run(config){
+        println!("Application error: {}", e);
+        // Exits with status code 1
+        process::exit(1);
+    }
+}
+
+fn run(config: Config) -> Result<(), Box<dyn Error>> {
     // Aquiring contents of the read file
-    let contents: String = fs::read_to_string(config.filename).expect("Something went wrong reading the file");
+    let contents: String = fs::read_to_string(config.filename)?;
 
     // Output
     println!("With text: \n{}", contents);
 
+    Ok(())
 }
 
 // Destructing tuple (From parse_config)
