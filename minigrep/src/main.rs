@@ -8,7 +8,7 @@ fn main() {
     
     // Calling the argument parsing function
     // Destructing the returned tuple into two variables
-    let config: Config = parse_config(&args);
+    let config: Config = Config::new(&args);
 
     // printing out the arguments
     println!("Searching for: {}", config.query);
@@ -29,18 +29,24 @@ struct Config {
     filename: String,
 }
 
-// Argument parsing
+// Coupling of Config struct and "parse_config" -> "new" function
+impl Config {
+    // Argument parsing
 
-// &[Strings] = Reference to an array of strings
-// -> = Returns a tuple with two strings
-fn parse_config(args: &[String]) -> Config {
-    
-    // Argument with the text to search
-    // Index 1. Because args[0] = bin path
-    let query: String = args[1].clone();
+    // &[Strings] = Reference to an array of strings
+    // '->' = Returns 
+    // new = convention for constructor functions
+    fn new(args: &[String]) -> Config {
+        
+        // Argument with the text to search
+        // Index 1. Because args[0] = bin path
+        let query: String = args[1].clone();
 
-    // Argument with the filename
-    let filename: String = args[2].clone();
+        // Argument with the filename
+        let filename: String = args[2].clone();
 
-    Config { query, filename }
+        Config { query, filename }
+    }
 }
+
+
