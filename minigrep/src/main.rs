@@ -6,12 +6,9 @@ fn main() {
     // Collecting args from cli
     let args: Vec<String> = env::args().collect();
     
-    // Argument with the text to search
-    // Index 1. Because args[0] = bin path
-    let query: &String = &args[1];
-
-    // Argument with the filename
-    let filename: &String = &args[2];
+    // Calling the argument parsing function
+    // Destructing the returned tuple into two variables
+    let(query, filename) = parse_config(&args);
 
     // printing out the arguments
     println!("Searching for: {}", query);
@@ -23,4 +20,27 @@ fn main() {
     // Output
     println!("With text: \n{}", contents);
 
+}
+
+// Destructing tuple (From parse_config)
+// Connecting returned values from parse_config to query/filename
+struct Config {
+    query: String,
+    filename: String,
+}
+
+// Argument parsing
+
+// &[Strings] = Reference to an array of strings
+// -> = Returns a tuple with two strings
+fn parse_config(args: &[Strings]) -> (&str, &str){
+    
+    // Argument with the text to search
+    // Index 1. Because args[0] = bin path
+    let query: String = args[1];
+
+    // Argument with the filename
+    let filename: String = args[2];
+
+    Config { query, filename };
 }
