@@ -1,6 +1,7 @@
 // Modules
 use std::env;
 use std::fs;
+use std::process;
 
 fn main() {
     // Collecting args from cli
@@ -8,7 +9,15 @@ fn main() {
     
     // Calling the argument parsing function
     // Destructing the returned tuple into two variables
-    let config: Config = Config::new(&args);
+    // unwrap_or_else = 
+        // Ok case: returns the value in ok 
+        // in the error case: executes closure passing it the error
+    let config: Config = Config::new(&args).unwrap_or_else( |err| {
+        // Printing error
+        println!("Problem parsing arguments: {}", err);
+        // Exits with status code 1
+        process::exit(1);
+    });
 
     // printing out the arguments
     println!("Searching for: {}", config.query);
@@ -35,9 +44,15 @@ impl Config {
 
     // &[Strings] = Reference to an array of strings
     // '->' = Returns 
-    // new = convention for constructor functions
-    fn new(args: &[String]) -> Config {
+    // new = convention for constructor function
+    // Returning Result type and Ok() to kill more noise when executing with no args
+    fn new(args: &[String]) -> Result<Config, &str>{
         
+        // Arg check 
+        if args.len() < 3 {
+            return Err("not enough arguments");
+        }
+
         // Argument with the text to search
         // Index 1. Because args[0] = bin path
         let query: String = args[1].clone();
@@ -45,7 +60,7 @@ impl Config {
         // Argument with the filename
         let filename: String = args[2].clone();
 
-        Config { query, filename }
+        Ok(Config { query, filename })
     }
 }
 
