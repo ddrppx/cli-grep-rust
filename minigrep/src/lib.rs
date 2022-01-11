@@ -1,14 +1,24 @@
 // Modules
 use std::fs;
 use std::error::Error;
+use std::env;
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     // Aquiring contents of the read file
     let contents: String = fs::read_to_string(config.filename)?;
 
+    // Dealing with case insensitivenes
+    let results = if config.case_sensitive {
+        // Search case sensitive
+        search(&config.query, &contents)
+    } else {
+        // Search not case sensitive
+        search_case_insensitive(&config.query, &contents)
+    };
+
     // Output
-    // Printing the lines containing the search string
-    for line in search(&config.query, &contents) {
+    // Printing that matches query
+    for line in results {
         println!("{}", line);
     }
 
@@ -20,6 +30,8 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 pub struct Config {
     pub query: String,
     pub filename: String,
+    // Case sensitive search or not
+    pub case_sensitive: bool,
 }
 
 // Coupling of Config struct and "parse_config" -> "new" function
@@ -44,7 +56,13 @@ impl Config {
         // Argument with the filename
         let filename: String = args[2].clone();
 
-        Ok(Config { query, filename })
+        // If case insensitive is not set will get an error the 
+        // variable case_sensitive will get 'false'
+        // otherwise, 'true'.
+        let case_sensitive: bool = env::var("CASE_INSENSITIVE").is_err();
+
+        // Passing variables to Config
+        Ok(Config { query, filename, case_sensitive })
     }
 }
 
@@ -65,11 +83,25 @@ pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     results
 }   
 
+// Search for case insensitive
+// Makes the needle and the haystack lowercase
 pub fn search_case_insensitive<'a>(
     query: &str,
     contents: &'a str,
-) -> Vec<&'a str>{
-    vec![]
+) -> Vec<&'a str> {
+    // Query search to lowercase
+    let query: String = query.to_lowercase();
+    let mut results: Vec <&str> = Vec::new();
+
+    for line in contents.lines() {
+        // Line to lowercase to match query
+        if line.to_lowercase().contains(&query) {
+            results.push(line);
+        }
+    }
+
+    // Return results vector
+    results
 }
 
 // TDD
@@ -104,7 +136,8 @@ Duct tape.";
         let contents: &str = "\
 Rust:
 safe, fast, productive.
-Pick three.";
+Pick three.
+Trust me.";
 
         // Calls search passing query and contents
         // Expecting lines with the query string
