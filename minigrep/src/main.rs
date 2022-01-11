@@ -16,7 +16,8 @@ fn main() {
         // in the error case: executes closure passing it the error
     let config: Config = Config::new(&args).unwrap_or_else( |err| {
         // Printing error
-        println!("Problem parsing arguments: {}", err);
+        // eprintln!() = Not printing error to standart output
+        eprintln!("Problem parsing arguments: {}", err);
         // Exits with status code 1
         process::exit(1);
     });
@@ -27,7 +28,8 @@ fn main() {
 
     // Checking if run() returns an error variant
     if let Err(e) = minigrep::run(config){
-        println!("Application error: {}", e);
+        // eprintln!() = Not printing error to standart output
+        eprintln!("Application error: {}", e);
         // Exits with status code 1
         process::exit(1);
     }
