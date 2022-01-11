@@ -65,6 +65,13 @@ pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     results
 }   
 
+pub fn search_case_insensitive<'a>(
+    query: &str,
+    contents: &'a str,
+) -> Vec<&'a str>{
+    vec![]
+}
+
 // TDD
 #[cfg(test)]
 mod tests{
@@ -72,9 +79,26 @@ mod tests{
 
     // Test script
     #[test]
-    fn one_result() {
+    fn case_sensitive() {
         // Text to search - needle
         let query: &str = "duct";
+        // Text to search on - haystack
+        // Indenting will include spaces and make the test fail
+        let contents: &str = "\
+Rust:
+safe, fast, productive.
+Pick three.
+Duct tape.";
+
+        // Calls search passing query and contents
+        // Expecting lines with the query string
+        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+    }
+
+    #[test]
+    fn case_insensitive() {
+        // Text to search - needle
+        let query: &str = "rUST";
         // Text to search on - haystack
         // Indenting will include spaces and make the test fail
         let contents: &str = "\
@@ -84,8 +108,9 @@ Pick three.";
 
         // Calls search passing query and contents
         // Expecting lines with the query string
-        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+        assert_eq!(vec!["Rust:", "Trust me."], search_case_insensitive(query, contents));
     }
+
 }
 
 
