@@ -7,7 +7,10 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents: String = fs::read_to_string(config.filename)?;
 
     // Output
-    println!("With text: \n{}", contents);
+    // Printing the lines containing the search string
+    for line in search(&config.query, &contents) {
+        println!("{}", line);
+    }
 
     Ok(())
 }
@@ -45,22 +48,42 @@ impl Config {
     }
 }
 
+// 'a = Strings and returned vector lifetime tied to the contents input parameter
 pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    vec![]
+    // Results vector
+    let mut results: Vec<&str> = Vec::new();
+
+    // Looping through the contents
+    for line in contents.lines() {
+        // Checking if the line has the query
+        if line.contains(query){
+            // Pushes found string into the results vector
+            results.push(line);
+        }
+    }
+    // Returning the results vector
+    results
 }   
 
+// TDD
 #[cfg(test)]
 mod tests{
     use super::*;
 
+    // Test script
     #[test]
     fn one_result() {
+        // Text to search - needle
         let query: &str = "duct";
+        // Text to search on - haystack
+        // Indenting will include spaces and make the test fail
         let contents: &str = "\
-            Rust:
-            safe, fast, productive.
-            Pick three.";
+Rust:
+safe, fast, productive.
+Pick three.";
 
+        // Calls search passing query and contents
+        // Expecting lines with the query string
         assert_eq!(vec!["safe, fast, productive."], search(query, contents));
     }
 }
