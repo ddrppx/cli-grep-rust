@@ -56,9 +56,13 @@ impl Config {
         // Argument with the filename
         let filename: String = args[2].clone();
 
-        // If case insensitive is not set will get an error the 
+        // If the environment variable CASE_INSENSITIVE is not set will get an error the 
         // variable case_sensitive will get 'false'
         // otherwise, 'true'.
+
+        // on bash run: 
+            // 'export CASE_INSENSITIVE=true' to set
+            // 'unset CASE_INSENSITIVE' to unset.
         let case_sensitive: bool = env::var("CASE_INSENSITIVE").is_err();
 
         // Passing variables to Config
